@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
+
+const _iconSize = 24.0;
 
 /// Show a number pad dialog.
 Future<num?> showNumPad(
@@ -12,24 +15,22 @@ Future<num?> showNumPad(
   bool withNegative = true,
   bool isNegative = false,
 }) {
-  return showDialog(
+  return showShadDialog(
       context: context,
       builder: (context) {
-        return Theme(
-            data: ThemeData(useMaterial3: true),
-            child: Dialog(
-              child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: NumbPad(
-                    focusNode: focusNode,
-                    initialValue: initialValue,
-                    hintText: hintText,
-                    constraints: constraints,
-                    withDot: withDot,
-                    withNegative: withNegative,
-                    isNegative: isNegative,
-                  )),
-            ));
+        return ShadDialog(
+          child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: NumbPad(
+                focusNode: focusNode,
+                initialValue: initialValue,
+                hintText: hintText,
+                constraints: constraints,
+                withDot: withDot,
+                withNegative: withNegative,
+                isNegative: isNegative,
+              )),
+        );
       });
 }
 
@@ -135,36 +136,33 @@ class _NumberPadState extends State<NumbPad> {
 
   /// The number button adds a number to the text field.
   Widget numberButton(num value) {
-    return InkWell(
-      onTap: () => addNumber(value),
-      child: Center(
-        child: Text(
-          value.toString(),
-          style: const TextStyle(fontSize: 20),
-        ),
+    return FittedBox(
+      child: ShadButton.ghost(
+        onPressed: () => addNumber(value),
+        child: Text(value.toString()),
       ),
     );
   }
 
   /// The dot button adds a dot to the text field.
   Widget dotButton() {
-    return InkWell(
-      onTap: addDot,
-      child: const Center(
-        child: Text(
-          '.',
-          style: TextStyle(fontSize: 30),
-        ),
+    return FittedBox(
+      child: ShadButton.ghost(
+        onPressed: addDot,
+        child: Text('.'),
       ),
     );
   }
 
   /// The delete button removes the last character from the text field.
   Widget deleteButton() {
-    return InkWell(
-      onTap: delete,
-      child: const Center(
-        child: Icon(Icons.backspace),
+    return FittedBox(
+      child: ShadButton.ghost(
+        onPressed: delete,
+        child: ShadImage.square(
+          LucideIcons.delete,
+          size: _iconSize,
+        ),
       ),
     );
   }
@@ -183,12 +181,13 @@ class _NumberPadState extends State<NumbPad> {
     /// Constrain the size of the dialog.
     return ConstrainedBox(
       constraints: _constraints,
-      child: KeyboardListener(
+      child: Focus(
+          autofocus: true,
           focusNode: keyboardFocusNode,
-          onKeyEvent: (event) {
-            if (inputFocusNode.hasFocus) return;
-
-            if (event is KeyUpEvent) return;
+          onKeyEvent: (node, event) {
+            if (inputFocusNode.hasFocus || event is KeyUpEvent) {
+              return KeyEventResult.ignored;
+            }
 
             /// If the user presses number keys, add the number to the text field.
             if (event.character?.contains(RegExp(r'\d+')) ?? false) {
@@ -207,26 +206,27 @@ class _NumberPadState extends State<NumbPad> {
                 event.logicalKey == LogicalKeyboardKey.numpadEnter)) {
               pop();
             }
+            return KeyEventResult.handled;
           },
           child: Column(
             children: [
               Expanded(
                 child: Row(children: [
                   if (widget.withNegative)
-                    IconButton(
+                    ShadButton.ghost(
                       onPressed: updateNegative,
-                      icon: isNegative
-                          ? const Icon(
-                              Icons.remove,
-                              size: 30,
+                      child: isNegative
+                          ? const ShadImage.square(
+                              LucideIcons.minus,
+                              size: _iconSize,
                             )
-                          : const Icon(
-                              Icons.add,
-                              size: 30,
+                          : const ShadImage.square(
+                              LucideIcons.plus,
+                              size: _iconSize,
                             ),
                     ),
                   Expanded(
-                      child: TextField(
+                      child: ShadInput(
                     focusNode: inputFocusNode,
                     controller: controller,
                     inputFormatters: [
@@ -235,19 +235,21 @@ class _NumberPadState extends State<NumbPad> {
                     ],
                     style: const TextStyle(fontSize: 50),
                     textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: widget.hintText ?? '0',
-                      hintStyle: const TextStyle(fontSize: 50),
-                      suffixIconConstraints:
-                          BoxConstraints.tight(const Size(40, 40)),
+                    placeholder: Center(
+                      child: Text(
+                        widget.hintText ?? 'Input number',
+                        style: TextStyle(fontSize: 36),
+                      ),
                     ),
+                    decoration: ShadDecoration(
+                        border: ShadBorder.none,
+                        focusedBorder: ShadBorder.none),
                   )),
-                  IconButton(
+                  ShadButton.ghost(
                       onPressed: pop,
-                      icon: const Icon(
-                        Icons.check,
-                        size: 40,
+                      child: const ShadImage.square(
+                        LucideIcons.check,
+                        size: _iconSize,
                       ))
                 ]),
               ),
