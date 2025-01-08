@@ -235,10 +235,9 @@ class _NumberPadState extends State<NumbPad> {
                     ],
                     style: const TextStyle(fontSize: 50),
                     textAlign: TextAlign.center,
-                    placeholder: Center(
-                      child: Text(
-                        widget.hintText ?? 'Input number',
-                        style: TextStyle(fontSize: 36),
+                    placeholder: SizedBox.expand(
+                      child: FittedBox(
+                        child: Text(widget.hintText ?? 'Input Number'),
                       ),
                     ),
                     decoration: ShadDecoration(
