@@ -233,7 +233,7 @@ class _NumberPadState extends State<NumbPad> {
                       /// Only allow numbers and one dot.
                       FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
                     ],
-                    style: const TextStyle(fontSize: 50),
+                    style: Theme.of(context).textTheme.displayLarge,
                     textAlign: TextAlign.center,
                     placeholder: SizedBox.expand(
                       child: FittedBox(

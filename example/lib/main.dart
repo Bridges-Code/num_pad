@@ -19,6 +19,7 @@ class MainApp extends StatelessWidget {
           brightness: Brightness.dark,
           colorScheme:
               ShadColorScheme.fromName('neutral', brightness: Brightness.dark)),
+      themeMode: ThemeMode.light,
       home: Scaffold(
         body: Center(
           child: NumPadButton(),
