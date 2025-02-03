@@ -14,6 +14,7 @@ Future<num?> showNumPad(
   bool withDot = true,
   bool withNegative = true,
   bool isNegative = false,
+  int? maxLength,
 }) {
   return showShadDialog(
       context: context,
@@ -29,6 +30,7 @@ Future<num?> showNumPad(
                 withDot: withDot,
                 withNegative: withNegative,
                 isNegative: isNegative,
+                maxLength: maxLength,
               )),
         );
       });
@@ -47,6 +49,7 @@ class NumbPad extends StatefulWidget {
     this.withDot = true,
     this.withNegative = true,
     this.isNegative = false,
+    this.maxLength,
   });
 
   final FocusNode? focusNode;
@@ -56,6 +59,7 @@ class NumbPad extends StatefulWidget {
   final bool withDot;
   final bool withNegative;
   final bool isNegative;
+  final int? maxLength;
 
   @override
   State<NumbPad> createState() => _NumberPadState();
@@ -97,6 +101,10 @@ class _NumberPadState extends State<NumbPad> {
   addNumber(num value) {
     clearInitialValue();
     controller.text += value.toString();
+    if (widget.maxLength != null &&
+        controller.text.length == widget.maxLength!) {
+      pop();
+    }
   }
 
   /// Add a dot to the text field.

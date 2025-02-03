@@ -37,7 +37,7 @@ class NumPadButton extends StatelessWidget {
     return ShadButton(
         onPressed: () async {
           // Show Num Pad
-          final result = await showNumPad(context);
+          final result = await showNumPad(context, maxLength: 5);
           print(result);
         },
         child: Text('Show Num Pad'));
