@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-const _iconSize = 24.0;
-
 /// Show a number pad dialog.
 Future<num?> showNumPad(
   BuildContext context, {
@@ -167,10 +165,7 @@ class _NumberPadState extends State<NumbPad> {
     return FittedBox(
       child: ShadButton.ghost(
         onPressed: delete,
-        child: ShadImage.square(
-          LucideIcons.delete,
-          size: _iconSize,
-        ),
+        child: Icon(LucideIcons.delete),
       ),
     );
   }
@@ -224,14 +219,8 @@ class _NumberPadState extends State<NumbPad> {
                     ShadButton.ghost(
                       onPressed: updateNegative,
                       child: isNegative
-                          ? const ShadImage.square(
-                              LucideIcons.minus,
-                              size: _iconSize,
-                            )
-                          : const ShadImage.square(
-                              LucideIcons.plus,
-                              size: _iconSize,
-                            ),
+                          ? const Icon(LucideIcons.minus)
+                          : const Icon(LucideIcons.plus),
                     ),
                   Expanded(
                       child: ShadInput(
@@ -253,11 +242,7 @@ class _NumberPadState extends State<NumbPad> {
                         focusedBorder: ShadBorder.none),
                   )),
                   ShadButton.ghost(
-                      onPressed: pop,
-                      child: const ShadImage.square(
-                        LucideIcons.check,
-                        size: _iconSize,
-                      ))
+                      onPressed: pop, child: const Icon(LucideIcons.check))
                 ]),
               ),
 

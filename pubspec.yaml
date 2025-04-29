@@ -1,6 +1,6 @@
 name: num_pad
 description: "A new Flutter package project."
-version: 0.0.2
+version: 0.0.3
 homepage: null
 
 environment:
@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  shadcn_ui: ^0.17.6
+  shadcn_ui: ^0.25.0
 
 dev_dependencies:
   flutter_lints: ^5.0.0
