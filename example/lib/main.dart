@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:num_pad/num_pad.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 void main() {
