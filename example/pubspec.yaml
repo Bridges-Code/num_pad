@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
   num_pad:
     path: ../
-  shadcn_ui: ^0.25.0
+  shadcn_ui: ^0.26.3
 
 dev_dependencies:
   flutter_lints: ^5.0.0
