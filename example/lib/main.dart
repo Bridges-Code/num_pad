@@ -1,12 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:num_pad/num_pad.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const App());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Home(),
+    );
+  }
+}
+
+class Home extends StatelessWidget {
+  const Home({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton(
+            onPressed: () async {
+              final result =
+                  await showNumPad(context, hintText: 'Enter a number');
+              print(result);
+            },
+            child: const Text('Show Num Pad')),
+      ),
+    );
+  }
+}
+
+class ShadMainApp extends StatelessWidget {
+  const ShadMainApp({super.key});
 
   @override
   Widget build(BuildContext context) {

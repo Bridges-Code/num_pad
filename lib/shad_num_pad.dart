@@ -1,9 +1,9 @@
-import 'package:auto_size_text_field/auto_size_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 /// Show a number pad dialog.
-Future<num?> showNumPad(
+Future<num?> showShadNumPad(
   BuildContext context, {
   FocusNode? focusNode,
   num? initialValue,
@@ -14,13 +14,13 @@ Future<num?> showNumPad(
   bool isNegative = false,
   int? maxLength,
 }) {
-  return showDialog(
+  return showShadDialog(
       context: context,
       builder: (context) {
-        return Dialog(
+        return ShadDialog(
           child: Padding(
               padding: const EdgeInsets.all(20),
-              child: NumPad(
+              child: ShadNumPad(
                 focusNode: focusNode,
                 initialValue: initialValue,
                 hintText: hintText,
@@ -37,8 +37,8 @@ Future<num?> showNumPad(
 const _constraints = BoxConstraints(maxWidth: 500, maxHeight: 500);
 
 /// A number pad dialog.
-class NumPad extends StatefulWidget {
-  const NumPad({
+class ShadNumPad extends StatefulWidget {
+  const ShadNumPad({
     super.key,
     this.focusNode,
     this.initialValue,
@@ -60,10 +60,10 @@ class NumPad extends StatefulWidget {
   final int? maxLength;
 
   @override
-  State<NumPad> createState() => _NumberPadState();
+  State<ShadNumPad> createState() => _NumberPadState();
 }
 
-class _NumberPadState extends State<NumPad> {
+class _NumberPadState extends State<ShadNumPad> {
   late final controller =
       TextEditingController(text: widget.initialValue?.abs().toString());
   late final keyboardFocusNode = widget.focusNode ?? FocusNode();
@@ -143,7 +143,7 @@ class _NumberPadState extends State<NumPad> {
   /// The number button adds a number to the text field.
   Widget numberButton(num value) {
     return FittedBox(
-      child: TextButton(
+      child: ShadButton.ghost(
         onPressed: () => addNumber(value),
         child: Text(value.toString()),
       ),
@@ -153,7 +153,7 @@ class _NumberPadState extends State<NumPad> {
   /// The dot button adds a dot to the text field.
   Widget dotButton() {
     return FittedBox(
-      child: TextButton(
+      child: ShadButton.ghost(
         onPressed: addDot,
         child: Text('.'),
       ),
@@ -163,9 +163,9 @@ class _NumberPadState extends State<NumPad> {
   /// The delete button removes the last character from the text field.
   Widget deleteButton() {
     return FittedBox(
-      child: TextButton(
+      child: ShadButton.ghost(
         onPressed: delete,
-        child: Icon(Icons.backspace),
+        child: Icon(LucideIcons.delete),
       ),
     );
   }
@@ -213,22 +213,17 @@ class _NumberPadState extends State<NumPad> {
           },
           child: Column(
             children: [
-              if (widget.hintText != null)
-                Text(
-                  widget.hintText!,
-                  style: Theme.of(context).textTheme.displaySmall,
-                ),
               Expanded(
                 child: Row(children: [
                   if (widget.withNegative)
-                    TextButton(
+                    ShadButton.ghost(
                       onPressed: updateNegative,
                       child: isNegative
-                          ? const Icon(Icons.remove)
-                          : const Icon(Icons.add),
+                          ? const Icon(LucideIcons.minus)
+                          : const Icon(LucideIcons.plus),
                     ),
                   Expanded(
-                      child: AutoSizeTextField(
+                      child: ShadInput(
                     focusNode: inputFocusNode,
                     controller: controller,
                     inputFormatters: [
@@ -237,18 +232,17 @@ class _NumberPadState extends State<NumPad> {
                     ],
                     style: Theme.of(context).textTheme.displayLarge,
                     textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-
-                      // hint: SizedBox.expand(
-                      //   child: FittedBox(
-                      //     child: Text(widget.hintText ?? 'Input Number'),
-                      //   ),
-                      // ),
+                    placeholder: SizedBox.expand(
+                      child: FittedBox(
+                        child: Text(widget.hintText ?? 'Input Number'),
+                      ),
                     ),
+                    decoration: ShadDecoration(
+                        border: ShadBorder.none,
+                        focusedBorder: ShadBorder.none),
                   )),
-                  TextButton(onPressed: pop, child: const Icon(Icons.check))
+                  ShadButton.ghost(
+                      onPressed: pop, child: const Icon(LucideIcons.check))
                 ]),
               ),
 
