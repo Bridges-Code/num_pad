@@ -26,8 +26,11 @@ class Home extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
             onPressed: () async {
-              final result =
-                  await showNumPad(context, hintText: 'Enter a number');
+              final result = await showNumPad(context,
+                  hintText: 'Enter a number',
+                  withNegative: false,
+                  withDot: false,
+                  maxLength: 8);
               print(result);
             },
             child: const Text('Show Num Pad')),

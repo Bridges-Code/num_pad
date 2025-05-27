@@ -34,8 +34,6 @@ Future<num?> showNumPad(
       });
 }
 
-const _constraints = BoxConstraints(maxWidth: 500, maxHeight: 500);
-
 /// A number pad dialog.
 class NumPad extends StatefulWidget {
   const NumPad({
@@ -43,7 +41,7 @@ class NumPad extends StatefulWidget {
     this.focusNode,
     this.initialValue,
     this.hintText,
-    this.constraints = _constraints,
+    this.constraints,
     this.withDot = true,
     this.withNegative = true,
     this.isNegative = false,
@@ -72,6 +70,8 @@ class _NumberPadState extends State<NumPad> {
   late bool isNegative = widget.initialValue == null
       ? widget.isNegative
       : widget.initialValue! < 0;
+  late final constraints =
+      widget.constraints ?? BoxConstraints(maxWidth: 450, maxHeight: 600);
 
   @override
   void initState() {
@@ -170,6 +170,12 @@ class _NumberPadState extends State<NumPad> {
     );
   }
 
+  Widget sendButton() {
+    return FittedBox(
+      child: TextButton(onPressed: pop, child: const Icon(Icons.check)),
+    );
+  }
+
   @override
   void dispose() {
     controller.dispose();
@@ -183,7 +189,7 @@ class _NumberPadState extends State<NumPad> {
   Widget build(BuildContext context) {
     /// Constrain the size of the dialog.
     return ConstrainedBox(
-      constraints: _constraints,
+      constraints: constraints,
       child: Focus(
           autofocus: true,
           focusNode: keyboardFocusNode,
@@ -220,35 +226,39 @@ class _NumberPadState extends State<NumPad> {
                 ),
               Expanded(
                 child: Row(children: [
-                  if (widget.withNegative)
-                    TextButton(
-                      onPressed: updateNegative,
-                      child: isNegative
-                          ? const Icon(Icons.remove)
-                          : const Icon(Icons.add),
-                    ),
+                  widget.withNegative
+                      ? Expanded(
+                          child: TextButton(
+                          onPressed: updateNegative,
+                          child: isNegative
+                              ? const Icon(Icons.remove)
+                              : const Icon(Icons.add),
+                        ))
+                      : Spacer(),
                   Expanded(
+                      flex: 5,
                       child: AutoSizeTextField(
-                    focusNode: inputFocusNode,
-                    controller: controller,
-                    inputFormatters: [
-                      /// Only allow numbers and one dot.
-                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-                    ],
-                    style: Theme.of(context).textTheme.displayLarge,
-                    textAlign: TextAlign.center,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
+                        focusNode: inputFocusNode,
+                        controller: controller,
+                        inputFormatters: [
+                          /// Only allow numbers and one dot.
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'^\d*\.?\d*')),
+                        ],
+                        style: Theme.of(context).textTheme.displayLarge,
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          focusedBorder: InputBorder.none,
 
-                      // hint: SizedBox.expand(
-                      //   child: FittedBox(
-                      //     child: Text(widget.hintText ?? 'Input Number'),
-                      //   ),
-                      // ),
-                    ),
-                  )),
-                  TextButton(onPressed: pop, child: const Icon(Icons.check))
+                          // hint: SizedBox.expand(
+                          //   child: FittedBox(
+                          //     child: Text(widget.hintText ?? 'Input Number'),
+                          //   ),
+                          // ),
+                        ),
+                      )),
+                  Expanded(child: deleteButton()),
                 ]),
               ),
 
@@ -271,7 +281,7 @@ class _NumberPadState extends State<NumPad> {
                 children: [
                   Expanded(child: dotButton()),
                   Expanded(child: numberButton(0)),
-                  Expanded(child: deleteButton()),
+                  Expanded(child: sendButton()),
                 ],
               ))
             ],
