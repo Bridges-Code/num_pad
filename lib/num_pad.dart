@@ -7,6 +7,7 @@ Future<num?> showNumPad(
   BuildContext context, {
   FocusNode? focusNode,
   num? initialValue,
+  Widget? hint,
   String? hintText,
   BoxConstraints? constraints,
   bool withDot = true,
@@ -23,6 +24,7 @@ Future<num?> showNumPad(
               child: NumPad(
                 focusNode: focusNode,
                 initialValue: initialValue,
+                hint: hint,
                 hintText: hintText,
                 constraints: constraints,
                 withDot: withDot,
