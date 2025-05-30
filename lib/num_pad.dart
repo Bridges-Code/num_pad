@@ -40,6 +40,7 @@ class NumPad extends StatefulWidget {
     super.key,
     this.focusNode,
     this.initialValue,
+    this.hint,
     this.hintText,
     this.constraints,
     this.withDot = true,
@@ -50,6 +51,7 @@ class NumPad extends StatefulWidget {
 
   final FocusNode? focusNode;
   final num? initialValue;
+  final Widget? hint;
   final String? hintText;
   final BoxConstraints? constraints;
   final bool withDot;
@@ -219,7 +221,8 @@ class _NumberPadState extends State<NumPad> {
           },
           child: Column(
             children: [
-              if (widget.hintText != null)
+              if (widget.hint != null) widget.hint!,
+              if (widget.hintText != null && widget.hint == null)
                 Text(
                   widget.hintText!,
                   style: Theme.of(context).textTheme.displaySmall,
