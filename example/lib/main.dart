@@ -31,7 +31,7 @@ class Home extends StatelessWidget {
                   withNegative: false,
                   withDot: false,
                   maxLength: 8);
-              print(result);
+              debugPrint(result.toString());
             },
             child: const Text('Show Num Pad')),
       ),
@@ -44,7 +44,7 @@ class ShadMainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ShadApp.material(
+    return ShadApp(
       theme: ShadThemeData(
           brightness: Brightness.light,
           colorScheme: ShadColorScheme.fromName('neutral')),

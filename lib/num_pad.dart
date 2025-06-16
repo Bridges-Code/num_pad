@@ -92,7 +92,7 @@ class _NumberPadState extends State<NumPad> {
     });
   }
 
-  clearInitialValue() {
+  void clearInitialValue() {
     if (_initialValue != null) {
       controller.text = '';
       _initialValue = null;
@@ -100,7 +100,7 @@ class _NumberPadState extends State<NumPad> {
   }
 
   /// Add a number to the text field.
-  addNumber(num value) {
+  void addNumber(num value) {
     clearInitialValue();
     controller.text += value.toString();
     if (widget.maxLength != null &&
@@ -110,7 +110,7 @@ class _NumberPadState extends State<NumPad> {
   }
 
   /// Add a dot to the text field.
-  addDot() {
+  void addDot() {
     clearInitialValue();
 
     /// If the text field is empty, add a zero before the dot.
@@ -125,7 +125,7 @@ class _NumberPadState extends State<NumPad> {
   }
 
   /// Remove the last character from the text field.
-  delete() {
+  void delete() {
     if (controller.text.isNotEmpty) {
       controller.text =
           controller.text.substring(0, controller.text.length - 1);
@@ -133,12 +133,12 @@ class _NumberPadState extends State<NumPad> {
   }
 
   /// Close the dialog and return the value.
-  pop() {
+  void pop() {
     Navigator.of(context)
         .maybePop(num.tryParse('${isNegative ? '-' : ''}${controller.text}'));
   }
 
-  updateNegative() {
+  void updateNegative() {
     setState(() {
       isNegative = !isNegative;
     });
