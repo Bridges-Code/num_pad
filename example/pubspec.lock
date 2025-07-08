@@ -143,10 +143,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_svg
-      sha256: d44bf546b13025ec7353091516f6881f1d4c633993cb109c3916c3a0159dadf1
+      sha256: cd57f7969b4679317c17af6fd16ee233c1e60a82ed209d8a475c54fd6fd6f845
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "2.2.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -228,10 +228,10 @@ packages:
     dependency: transitive
     description:
       name: lucide_icons_flutter
-      sha256: "2cc30b669d2e9329072bdd4e3f50d4a31d4dd6ee9e9748d639dab95cd2edd0ce"
+      sha256: "2fbe1a1e229b57a562bd9f1e30ddd2f4fb4743649e0afde3fe549d7370cf0c86"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.5"
+    version: "3.0.6"
   matcher:
     dependency: transitive
     description:
@@ -262,7 +262,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.6"
+    version: "0.0.7"
   path:
     dependency: transitive
     description:
@@ -355,10 +355,10 @@ packages:
     dependency: "direct main"
     description:
       name: shadcn_ui
-      sha256: "108121ccf3b67e553910de7b4ec1564976dc3b7e4380cee75e96e03cbdef58ba"
+      sha256: fb94e2731668cdafa662f636b9846a81e9bd677a99bae983b397b4f777d0cd66
       url: "https://pub.dev"
     source: hosted
-    version: "0.27.2"
+    version: "0.28.0"
   sky_engine:
     dependency: transitive
     description: flutter
