@@ -15,23 +15,25 @@ Future<num?> showShadNumPad(
   int? maxLength,
 }) {
   return showShadDialog(
-      context: context,
-      builder: (context) {
-        return ShadDialog(
-          child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: ShadNumPad(
-                focusNode: focusNode,
-                initialValue: initialValue,
-                hintText: hintText,
-                constraints: constraints,
-                withDot: withDot,
-                withNegative: withNegative,
-                isNegative: isNegative,
-                maxLength: maxLength,
-              )),
-        );
-      });
+    context: context,
+    builder: (context) {
+      return ShadDialog(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: ShadNumPad(
+            focusNode: focusNode,
+            initialValue: initialValue,
+            hintText: hintText,
+            constraints: constraints,
+            withDot: withDot,
+            withNegative: withNegative,
+            isNegative: isNegative,
+            maxLength: maxLength,
+          ),
+        ),
+      );
+    },
+  );
 }
 
 const _constraints = BoxConstraints(maxWidth: 500, maxHeight: 500);
@@ -48,6 +50,9 @@ class ShadNumPad extends StatefulWidget {
     this.withNegative = true,
     this.isNegative = false,
     this.maxLength,
+    this.showEnter = true,
+    this.onChanged,
+    this.onEnter,
   });
 
   final FocusNode? focusNode;
@@ -58,14 +63,18 @@ class ShadNumPad extends StatefulWidget {
   final bool withNegative;
   final bool isNegative;
   final int? maxLength;
+  final bool showEnter;
+  final void Function(num? value)? onChanged;
+  final void Function(num? value)? onEnter;
 
   @override
   State<ShadNumPad> createState() => _NumberPadState();
 }
 
 class _NumberPadState extends State<ShadNumPad> {
-  late final controller =
-      TextEditingController(text: widget.initialValue?.abs().toString());
+  late final controller = TextEditingController(
+    text: widget.initialValue?.abs().toString(),
+  );
   late final keyboardFocusNode = widget.focusNode ?? FocusNode();
   final inputFocusNode = FocusNode();
   late num? _initialValue = widget.initialValue;
@@ -85,6 +94,10 @@ class _NumberPadState extends State<ShadNumPad> {
       if (!inputFocusNode.hasFocus) {
         keyboardFocusNode.requestFocus();
       }
+    });
+
+    controller.addListener(() {
+      widget.onChanged?.call(result);
     });
   }
 
@@ -123,15 +136,22 @@ class _NumberPadState extends State<ShadNumPad> {
   /// Remove the last character from the text field.
   void delete() {
     if (controller.text.isNotEmpty) {
-      controller.text =
-          controller.text.substring(0, controller.text.length - 1);
+      controller.text = controller.text.substring(
+        0,
+        controller.text.length - 1,
+      );
     }
   }
 
+  num? get result => num.tryParse('${isNegative ? '-' : ''}${controller.text}');
+
   /// Close the dialog and return the value.
   void pop() {
-    Navigator.of(context)
-        .maybePop(num.tryParse('${isNegative ? '-' : ''}${controller.text}'));
+    if (widget.onEnter == null) {
+      Navigator.of(context).maybePop(result);
+    } else {
+      widget.onEnter?.call(result);
+    }
   }
 
   void updateNegative() {
@@ -153,10 +173,7 @@ class _NumberPadState extends State<ShadNumPad> {
   /// The dot button adds a dot to the text field.
   Widget dotButton() {
     return FittedBox(
-      child: ShadButton.ghost(
-        onPressed: addDot,
-        child: Text('.'),
-      ),
+      child: ShadButton.ghost(onPressed: addDot, child: Text('.')),
     );
   }
 
@@ -185,36 +202,37 @@ class _NumberPadState extends State<ShadNumPad> {
     return ConstrainedBox(
       constraints: _constraints,
       child: Focus(
-          autofocus: true,
-          focusNode: keyboardFocusNode,
-          onKeyEvent: (node, event) {
-            if (inputFocusNode.hasFocus || event is KeyUpEvent) {
-              return KeyEventResult.ignored;
-            }
+        autofocus: true,
+        focusNode: keyboardFocusNode,
+        onKeyEvent: (node, event) {
+          if (inputFocusNode.hasFocus || event is KeyUpEvent) {
+            return KeyEventResult.ignored;
+          }
 
-            /// If the user presses number keys, add the number to the text field.
-            if (event.character?.contains(RegExp(r'\d+')) ?? false) {
-              addNumber(num.parse(event.character!));
-            }
+          /// If the user presses number keys, add the number to the text field.
+          if (event.character?.contains(RegExp(r'\d+')) ?? false) {
+            addNumber(num.parse(event.character!));
+          }
 
-            /// If the user presses the dot key, add the dot to the text field.
-            if (event.character == '.') addDot();
+          /// If the user presses the dot key, add the dot to the text field.
+          if (event.character == '.') addDot();
 
-            /// If the user presses the backspace key, remove the last character
-            if (event.logicalKey == LogicalKeyboardKey.backspace) delete();
+          /// If the user presses the backspace key, remove the last character
+          if (event.logicalKey == LogicalKeyboardKey.backspace) delete();
 
-            /// If the user presses the enter key, close the dialog
-            /// and return the value.
-            if ((event.logicalKey == LogicalKeyboardKey.enter ||
-                event.logicalKey == LogicalKeyboardKey.numpadEnter)) {
-              pop();
-            }
-            return KeyEventResult.handled;
-          },
-          child: Column(
-            children: [
-              Expanded(
-                child: Row(children: [
+          /// If the user presses the enter key, close the dialog
+          /// and return the value.
+          if ((event.logicalKey == LogicalKeyboardKey.enter ||
+              event.logicalKey == LogicalKeyboardKey.numpadEnter)) {
+            pop();
+          }
+          return KeyEventResult.handled;
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
                   if (widget.withNegative)
                     ShadButton.ghost(
                       onPressed: updateNegative,
@@ -223,53 +241,64 @@ class _NumberPadState extends State<ShadNumPad> {
                           : const Icon(LucideIcons.plus),
                     ),
                   Expanded(
-                      child: ShadInput(
-                    focusNode: inputFocusNode,
-                    controller: controller,
-                    inputFormatters: [
-                      /// Only allow numbers and one dot.
-                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-                    ],
-                    style: Theme.of(context).textTheme.displayLarge,
-                    textAlign: TextAlign.center,
-                    placeholder: SizedBox.expand(
-                      child: FittedBox(
-                        child: Text(widget.hintText ?? 'Input Number'),
+                    child: ShadInput(
+                      focusNode: inputFocusNode,
+                      controller: controller,
+                      inputFormatters: [
+                        /// Only allow numbers and one dot.
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'^\d*\.?\d*'),
+                        ),
+                      ],
+                      style: Theme.of(context).textTheme.displayLarge,
+                      textAlign: TextAlign.center,
+                      placeholder: SizedBox.expand(
+                        child: FittedBox(
+                          child: Text(widget.hintText ?? 'Input Number'),
+                        ),
+                      ),
+                      decoration: ShadDecoration(
+                        border: ShadBorder.none,
+                        focusedBorder: ShadBorder.none,
                       ),
                     ),
-                    decoration: ShadDecoration(
-                        border: ShadBorder.none,
-                        focusedBorder: ShadBorder.none),
-                  )),
-                  ShadButton.ghost(
-                      onPressed: pop, child: const Icon(LucideIcons.check))
-                ]),
+                  ),
+                  if (widget.showEnter)
+                    ShadButton.ghost(
+                      onPressed: pop,
+                      child: const Icon(LucideIcons.check),
+                    ),
+                ],
               ),
+            ),
 
-              /// Generate the number buttons.
-              ...List.generate(3, (y) {
-                return Expanded(
-                    child: Row(
+            /// Generate the number buttons.
+            ...List.generate(3, (y) {
+              return Expanded(
+                child: Row(
                   children: [
                     ...List.generate(3, (x) {
                       final value = x + y * 3 + 1;
                       return Expanded(child: numberButton(value));
                     }),
                   ],
-                ));
-              }),
+                ),
+              );
+            }),
 
-              /// Generate the dot, zero and delete buttons.
-              Expanded(
-                  child: Row(
+            /// Generate the dot, zero and delete buttons.
+            Expanded(
+              child: Row(
                 children: [
                   Expanded(child: dotButton()),
                   Expanded(child: numberButton(0)),
                   Expanded(child: deleteButton()),
                 ],
-              ))
-            ],
-          )),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

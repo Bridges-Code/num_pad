@@ -310,7 +310,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.8+1"
+    version: "0.0.9"
   objective_c:
     dependency: transitive
     description:
@@ -416,7 +416,7 @@ packages:
     source: hosted
     version: "2.2.0"
   shadcn_ui:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: shadcn_ui
       sha256: "46b1311e5759879762184e0ed34e82c6c77b04140350d5dafed651af0af091fc"
