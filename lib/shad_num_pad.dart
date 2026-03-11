@@ -17,6 +17,7 @@ Future<num?> showShadNumPad(
   int? maxLength,
   OnEnter? onEnter,
   TextStyle? textStyle,
+  bool hideField = false,
 }) {
   return showShadDialog(
     context: context,
@@ -35,6 +36,7 @@ Future<num?> showShadNumPad(
             maxLength: maxLength,
             onEnter: onEnter,
             textStyle: textStyle,
+            hideField: hideField,
           ),
         ),
       );
@@ -60,6 +62,7 @@ class ShadNumPad extends StatefulWidget {
     this.onChanged,
     this.onEnter,
     this.textStyle,
+    this.hideField = false,
   });
 
   final FocusNode? focusNode;
@@ -74,6 +77,7 @@ class ShadNumPad extends StatefulWidget {
   final OnEnter? onChanged;
   final OnEnter? onEnter;
   final TextStyle? textStyle;
+  final bool hideField;
 
   @override
   State<ShadNumPad> createState() => _NumberPadState();
@@ -251,45 +255,46 @@ class _NumberPadState extends State<ShadNumPad> {
         },
         child: Column(
           children: [
-            Expanded(
-              child: Row(
-                children: [
-                  if (widget.withNegative)
-                    ShadButton.ghost(
-                      onPressed: updateNegative,
-                      child: isNegative
-                          ? const Icon(LucideIcons.minus)
-                          : const Icon(LucideIcons.plus),
-                    ),
-                  Expanded(
-                    child: ShadInput(
-                      focusNode: inputFocusNode,
-                      controller: controller,
-                      inputFormatters: [
-                        /// Only allow numbers and one dot.
-                        FilteringTextInputFormatter.allow(
-                          RegExp(r'^\d*\.?\d*'),
+            if (!widget.hideField)
+              Expanded(
+                child: Row(
+                  children: [
+                    if (widget.withNegative)
+                      ShadButton.ghost(
+                        onPressed: updateNegative,
+                        child: isNegative
+                            ? const Icon(LucideIcons.minus)
+                            : const Icon(LucideIcons.plus),
+                      ),
+                    Expanded(
+                      child: ShadInput(
+                        focusNode: inputFocusNode,
+                        controller: controller,
+                        inputFormatters: [
+                          /// Only allow numbers and one dot.
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d*\.?\d*'),
+                          ),
+                        ],
+                        style:
+                            widget.textStyle ??
+                            Theme.of(context).textTheme.displayLarge,
+                        textAlign: TextAlign.center,
+                        placeholder: SizedBox.expand(
+                          child: FittedBox(
+                            child: Text(widget.hintText ?? 'Input Number'),
+                          ),
                         ),
-                      ],
-                      style:
-                          widget.textStyle ??
-                          Theme.of(context).textTheme.displayLarge,
-                      textAlign: TextAlign.center,
-                      placeholder: SizedBox.expand(
-                        child: FittedBox(
-                          child: Text(widget.hintText ?? 'Input Number'),
+                        decoration: ShadDecoration(
+                          border: ShadBorder.none,
+                          focusedBorder: ShadBorder.none,
                         ),
                       ),
-                      decoration: ShadDecoration(
-                        border: ShadBorder.none,
-                        focusedBorder: ShadBorder.none,
-                      ),
                     ),
-                  ),
-                  deleteButton(),
-                ],
+                    deleteButton(),
+                  ],
+                ),
               ),
-            ),
 
             /// Generate the number buttons.
             ...List.generate(3, (y) {
