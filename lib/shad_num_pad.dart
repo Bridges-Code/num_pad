@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
+typedef OnEnter = void Function(num? value);
+
 /// Show a number pad dialog.
 Future<num?> showShadNumPad(
   BuildContext context, {
@@ -13,6 +15,7 @@ Future<num?> showShadNumPad(
   bool withNegative = true,
   bool isNegative = false,
   int? maxLength,
+  OnEnter? onEnter,
 }) {
   return showShadDialog(
     context: context,
@@ -29,6 +32,7 @@ Future<num?> showShadNumPad(
             withNegative: withNegative,
             isNegative: isNegative,
             maxLength: maxLength,
+            onEnter: onEnter,
           ),
         ),
       );
@@ -50,7 +54,7 @@ class ShadNumPad extends StatefulWidget {
     this.withNegative = true,
     this.isNegative = false,
     this.maxLength,
-    this.showEnter = true,
+    // this.showEnter = true,
     this.onChanged,
     this.onEnter,
   });
@@ -63,9 +67,9 @@ class ShadNumPad extends StatefulWidget {
   final bool withNegative;
   final bool isNegative;
   final int? maxLength;
-  final bool showEnter;
-  final void Function(num? value)? onChanged;
-  final void Function(num? value)? onEnter;
+  // final bool showEnter;
+  final OnEnter? onChanged;
+  final OnEnter? onEnter;
 
   @override
   State<ShadNumPad> createState() => _NumberPadState();
@@ -187,6 +191,13 @@ class _NumberPadState extends State<ShadNumPad> {
     );
   }
 
+  /// The send button closes the dialog and returns the value.
+  Widget sendButton() {
+    return FittedBox(
+      child: ShadButton.ghost(onPressed: pop, child: Icon(LucideIcons.check)),
+    );
+  }
+
   @override
   void dispose() {
     controller.dispose();
@@ -263,11 +274,7 @@ class _NumberPadState extends State<ShadNumPad> {
                       ),
                     ),
                   ),
-                  if (widget.showEnter)
-                    ShadButton.ghost(
-                      onPressed: pop,
-                      child: const Icon(LucideIcons.check),
-                    ),
+                  deleteButton(),
                 ],
               ),
             ),
@@ -292,7 +299,7 @@ class _NumberPadState extends State<ShadNumPad> {
                 children: [
                   Expanded(child: dotButton()),
                   Expanded(child: numberButton(0)),
-                  Expanded(child: deleteButton()),
+                  Expanded(child: sendButton()),
                 ],
               ),
             ),

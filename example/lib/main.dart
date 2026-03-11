@@ -67,6 +67,9 @@ class ShadMainApp extends StatelessWidget {
                 onChanged: (value) {
                   print('Changed: $value');
                 },
+                onEnter: (value) {
+                  print('Entered: $value');
+                },
               ),
             ),
           ],
