@@ -194,7 +194,13 @@ class _NumberPadState extends State<ShadNumPad> {
   /// The send button closes the dialog and returns the value.
   Widget sendButton() {
     return FittedBox(
-      child: ShadButton.ghost(onPressed: pop, child: Icon(LucideIcons.check)),
+      child: ShadButton.ghost(
+        onPressed: () {
+          widget.onEnter?.call(result);
+          if (widget.onEnter == null) pop();
+        },
+        child: Icon(LucideIcons.check),
+      ),
     );
   }
 
