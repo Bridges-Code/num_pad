@@ -18,6 +18,7 @@ Future<num?> showShadNumPad(
   OnEnter? onEnter,
   TextStyle? textStyle,
   bool hideField = false,
+  TextEditingController? controller,
 }) {
   return showShadDialog(
     context: context,
@@ -37,6 +38,7 @@ Future<num?> showShadNumPad(
             onEnter: onEnter,
             textStyle: textStyle,
             hideField: hideField,
+            controller: controller,
           ),
         ),
       );
@@ -63,12 +65,14 @@ class ShadNumPad extends StatefulWidget {
     this.onEnter,
     this.textStyle,
     this.hideField = false,
+    this.controller,
   });
 
   final FocusNode? focusNode;
   final num? initialValue;
   final String? hintText;
   final BoxConstraints? constraints;
+  final TextEditingController? controller;
   final bool withDot;
   final bool withNegative;
   final bool isNegative;
@@ -84,9 +88,9 @@ class ShadNumPad extends StatefulWidget {
 }
 
 class _NumberPadState extends State<ShadNumPad> {
-  late final controller = TextEditingController(
-    text: widget.initialValue?.abs().toString(),
-  );
+  late final controller =
+      widget.controller ??
+      TextEditingController(text: widget.initialValue?.abs().toString());
   late final keyboardFocusNode = widget.focusNode ?? FocusNode();
   final inputFocusNode = FocusNode();
   late num? _initialValue = widget.initialValue;
