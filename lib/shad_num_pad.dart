@@ -16,6 +16,7 @@ Future<num?> showShadNumPad(
   bool isNegative = false,
   int? maxLength,
   OnEnter? onEnter,
+  TextStyle? textStyle,
 }) {
   return showShadDialog(
     context: context,
@@ -33,6 +34,7 @@ Future<num?> showShadNumPad(
             isNegative: isNegative,
             maxLength: maxLength,
             onEnter: onEnter,
+            textStyle: textStyle,
           ),
         ),
       );
@@ -57,6 +59,7 @@ class ShadNumPad extends StatefulWidget {
     // this.showEnter = true,
     this.onChanged,
     this.onEnter,
+    this.textStyle,
   });
 
   final FocusNode? focusNode;
@@ -70,6 +73,7 @@ class ShadNumPad extends StatefulWidget {
   // final bool showEnter;
   final OnEnter? onChanged;
   final OnEnter? onEnter;
+  final TextStyle? textStyle;
 
   @override
   State<ShadNumPad> createState() => _NumberPadState();
@@ -267,7 +271,9 @@ class _NumberPadState extends State<ShadNumPad> {
                           RegExp(r'^\d*\.?\d*'),
                         ),
                       ],
-                      style: Theme.of(context).textTheme.displayLarge,
+                      style:
+                          widget.textStyle ??
+                          Theme.of(context).textTheme.displayLarge,
                       textAlign: TextAlign.center,
                       placeholder: SizedBox.expand(
                         child: FittedBox(
